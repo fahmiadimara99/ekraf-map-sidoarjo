@@ -3,180 +3,62 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Peta Potensi Ekraf, Wisata & Hotel Sidoarjo</title>
+    <title>Sidoarjo Smart Portal - 44 Lokasi Ekraf</title>
 
-    <meta http-equiv="Content-Security-Policy" content="
-        default-src * data: blob: 'unsafe-inline' 'unsafe-eval';
-        script-src * data: blob: 'unsafe-inline' 'unsafe-eval';
-        connect-src * data: blob: 'unsafe-inline';
-        img-src * data: blob: 'unsafe-inline';
-        frame-src *;
-        style-src * data: blob: 'unsafe-inline';
-        font-src * data: blob: 'unsafe-inline';
-    ">
-
-    <script src='https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js'></script>
-    <link href='https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css' rel='stylesheet' />
-    
+    <script src='https://api.mapbox.com/mapbox-gl-js/v3.0.1/mapbox-gl.js'></script>
+    <link href='https://api.mapbox.com/mapbox-gl-js/v3.0.1/mapbox-gl.css' rel='stylesheet' />
     <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.1.1/mapbox-gl-directions.js"></script>
     <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.1.1/mapbox-gl-directions.css" type="text/css">
+    <script async src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCEQzL5fTW9CILJ3_A27t_HfX9ZpRXwV2E&libraries=streetView"></script>
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Mulish:wght@400;600;800&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
-        /* --- VISUAL STYLING --- */
-        :root {
-            --primary: #2563eb;    
-            --accent: #f59e0b;     
-            --danger: #ef4444;     
-            --success: #10b981;    
-            --purple: #8b5cf6;     /* Warna Baru untuk Hotel */
-            --glass: rgba(255, 255, 255, 0.95);
-            --glass-blur: blur(16px);
-            --shadow: 0 10px 40px -10px rgba(0,0,0,0.2);
+        :root { 
+            --primary: #2563eb; --accent: #f59e0b; --danger: #ef4444; 
+            --success: #10b981; --purple: #8b5cf6; --glass: rgba(255, 255, 255, 0.95); 
         }
-
-        body { margin: 0; padding: 0; font-family: 'Mulish', 'Poppins', sans-serif; overflow: hidden; }
-        
+        body, html { margin: 0; padding: 0; font-family: 'Poppins', sans-serif; height: 100%; overflow: hidden; }
         #map { position: absolute; top: 0; bottom: 0; width: 100%; }
+        
+        .page-header { position: absolute; top: 20px; left: 20px; background: var(--glass); padding: 12px 20px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); z-index: 10; display: flex; align-items: center; gap: 12px; border: 1px solid #ddd; width: 340px; }
+        .header-logo { width: 45px; height: 45px; background: var(--primary); border-radius: 10px; display: grid; place-items: center; color: white; font-size: 20px; }
 
-        /* HEADER */
-        .page-header {
-            position: absolute; top: 20px; left: 20px; right: auto;
-            background: var(--glass);
-            padding: 15px 25px; border-radius: 16px;
-            box-shadow: var(--shadow);
-            backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur);
-            z-index: 10; display: flex; align-items: center; gap: 15px;
-            max-width: 380px; border: 1px solid rgba(255,255,255,0.6);
-        }
-        .header-logo {
-            width: 45px; height: 45px;
-            background: linear-gradient(135deg, var(--primary), #4f46e5);
-            border-radius: 12px; display: grid; place-items: center;
-            color: white; font-size: 20px; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
-        }
-        .header-text h1 { margin: 0; font-size: 18px; font-weight: 800; color: #1e293b; letter-spacing: -0.5px; }
-        .header-text p { margin: 0; font-size: 12px; color: #64748b; font-weight: 600; }
+        .map-controls { position: absolute; top: 20px; right: 20px; z-index: 10; display: flex; flex-direction: column; gap: 8px; }
+        .ctrl-btn { background: white; border: none; padding: 12px; border-radius: 8px; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.1); font-weight: bold; font-size: 11px; display: flex; align-items: center; gap: 8px; }
+        .ctrl-btn.active { background: var(--primary); color: white; }
 
-        /* TOGGLE STYLE */
-        .controls-group {
-            position: absolute; top: 20px; left: 50%; transform: translateX(-50%);
-            display: flex; gap: 10px; z-index: 10;
-        }
-        .control-btn {
-            background: var(--glass); border: none; padding: 10px 20px;
-            border-radius: 50px; cursor: pointer; font-weight: 700; font-size: 13px;
-            color: #475569; transition: all 0.2s; box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-        }
-        .control-btn:hover { transform: translateY(-2px); background: white; }
-        .control-btn.active { background: var(--primary); color: white; box-shadow: 0 4px 15px rgba(37, 99, 235, 0.4); }
+        .sidebar { position: absolute; top: 110px; left: 20px; width: 340px; max-height: 80vh; background: var(--glass); border-radius: 20px; padding: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); z-index: 5; display: flex; flex-direction: column; gap: 10px; border: 1px solid #eee; }
+        
+        .stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; }
+        .stat-card { padding: 8px; border-radius: 8px; text-align: center; color: white; font-size: 9px; font-weight: bold; }
+        .stat-total { background: var(--primary); grid-column: span 2; font-size: 11px; }
+        .stat-low { background: var(--success); }
+        .stat-med { background: var(--accent); }
+        .stat-high { background: var(--danger); }
+        .stat-card strong { font-size: 16px; display: block; }
 
-        /* SIDEBAR */
-        .sidebar {
-            position: absolute; top: 110px; left: 20px; width: 340px;
-            max-height: calc(100vh - 140px);
-            background: var(--glass);
-            backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur);
-            border-radius: 20px; padding: 20px;
-            box-shadow: var(--shadow);
-            display: flex; flex-direction: column; gap: 15px; z-index: 5;
-            border: 1px solid rgba(255,255,255,0.5);
-        }
-
-        /* STATISTIK */
-        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .stat-box {
-            background: rgba(255,255,255,0.6); border: 1px solid rgba(255,255,255,0.8);
-            padding: 12px; border-radius: 12px; text-align: center;
-        }
-        .stat-val { font-size: 24px; font-weight: 800; color: #1e293b; line-height: 1; margin-bottom: 4px; }
-        .stat-lbl { font-size: 10px; font-weight: 700; color: #64748b; text-transform: uppercase; }
-
-        /* FILTER */
-        .filter-title { font-size: 11px; font-weight: 800; color: #94a3b8; margin-bottom: 8px; }
-        .chips-container { display: flex; flex-wrap: wrap; gap: 6px; }
-        .chip {
-            padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 600;
-            background: white; border: 1px solid #e2e8f0; color: #64748b; cursor: pointer; transition: 0.2s;
-        }
+        .category-box { display: flex; flex-wrap: wrap; gap: 5px; margin: 5px 0; }
+        .chip { padding: 5px 10px; background: white; border: 1px solid #ddd; border-radius: 15px; font-size: 10px; cursor: pointer; font-weight: 600; transition: 0.2s; }
         .chip.active { background: var(--primary); color: white; border-color: var(--primary); }
 
-        /* LIST LOKASI */
         .loc-list { overflow-y: auto; flex-grow: 1; padding-right: 5px; scrollbar-width: thin; }
-        .loc-card {
-            background: rgba(255,255,255,0.5); border-radius: 12px; padding: 12px;
-            margin-bottom: 8px; cursor: pointer; transition: all 0.2s;
-            border-left: 4px solid transparent; display: flex; justify-content: space-between; align-items: center;
-        }
-        .loc-card:hover { background: white; transform: translateX(4px); box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
-        .loc-info h4 { margin: 0; font-size: 13px; color: #334155; font-weight: 700; }
-        .loc-info span { font-size: 11px; color: #64748b; margin-top: 2px; display: block; }
+        .loc-card { background: white; padding: 10px; border-radius: 10px; margin-bottom: 8px; cursor: pointer; border-left: 5px solid #ddd; font-size: 11px; transition: 0.2s; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .loc-card:hover { transform: translateX(5px); }
+
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; justify-content: center; align-items: center; backdrop-filter: blur(5px); }
+        .modal-content { width: 90%; max-width: 500px; background: white; border-radius: 20px; padding: 25px; position: relative; }
+        .sv-container { width: 95%; height: 85%; background: black; border-radius: 15px; overflow: hidden; position: relative; }
+        #pano { width: 100%; height: 100%; }
+        .close-btn { position: absolute; top: 15px; right: 15px; z-index: 10001; background: white; border: none; width: 35px; height: 35px; border-radius: 50%; cursor: pointer; font-weight: bold; }
+
+        .mapboxgl-popup-content { border-radius: 12px; padding: 0; overflow: hidden; width: 230px; }
+        .pop-img { width: 100%; height: 110px; object-fit: cover; }
+        .pop-body { padding: 10px; }
+        .pop-btn { width: 100%; padding: 8px; margin-top: 5px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 10px; display: flex; align-items: center; justify-content: center; gap: 8px; }
         
-        .loc-card.risk-Tinggi { border-left-color: var(--danger); }
-        .loc-card.risk-Sedang { border-left-color: var(--accent); }
-        .loc-card.risk-Rendah { border-left-color: var(--success); }
-        /* Style Khusus Hotel di List */
-        .loc-card[data-sector="Hotel"] .loc-info h4 { color: var(--purple); }
-
-        /* POPUP MAP */
-        .mapboxgl-popup-content { border-radius: 16px; padding: 0; overflow: hidden; border: none; box-shadow: var(--shadow); max-width: 300px; }
-        .popup-header { height: 130px; background-size: cover; background-position: center; position: relative; }
-        .popup-gradient { position: absolute; bottom: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to top, rgba(0,0,0,0.8), transparent); }
-        .popup-title { position: absolute; bottom: 15px; left: 15px; right: 15px; color: white; font-weight: 700; font-size: 16px; z-index: 2; text-shadow: 0 2px 4px rgba(0,0,0,0.3); }
-        .popup-body { padding: 15px; background: white; }
-        .tag-row { display: flex; gap: 8px; margin-bottom: 10px; }
-        .tag { padding: 4px 8px; border-radius: 6px; font-size: 10px; font-weight: 700; background: #f1f5f9; color: #475569; }
-        .tag.risk-Tinggi { background: #fef2f2; color: var(--danger); }
-        .tag.risk-Sedang { background: #fffbeb; color: var(--accent); }
-        .tag.risk-Rendah { background: #ecfdf5; color: var(--success); }
-
-        .btn-nav {
-            display: flex; align-items: center; justify-content: center; gap: 8px;
-            width: 100%; padding: 10px 0; margin-top: 15px;
-            background: var(--primary); color: white; border-radius: 10px;
-            text-decoration: none; font-size: 13px; font-weight: 600;
-            border: none; cursor: pointer; transition: 0.2s;
-        }
-        .btn-nav:hover { background: #1d4ed8; }
-
-        /* ANIMASI MARKER */
-        .marker-dot {
-            width: 20px; height: 20px; border-radius: 50%;
-            background: var(--primary); border: 3px solid white;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3); cursor: pointer; position: relative;
-        }
-        .marker-dot::after {
-            content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            width: 30px; height: 30px; border-radius: 50%; border: 2px solid var(--primary); opacity: 0; animation: pulse 2s infinite;
-        }
-        /* Warna Marker */
-        .marker-dot.risk-Tinggi { background: var(--danger); }
-        .marker-dot.risk-Tinggi::after { border-color: var(--danger); }
-        .marker-dot.risk-Sedang { background: var(--accent); }
-        .marker-dot.risk-Sedang::after { border-color: var(--accent); }
-        .marker-dot.risk-Rendah { background: var(--success); }
-        .marker-dot.risk-Rendah::after { border-color: var(--success); }
-        
-        /* Marker Khusus Hotel (Ungu) */
-        .marker-dot.sector-Hotel { background: var(--purple); }
-        .marker-dot.sector-Hotel::after { border-color: var(--purple); }
-
-        @keyframes pulse { 0% { width: 20px; height: 20px; opacity: 0.8; } 100% { width: 50px; height: 50px; opacity: 0; } }
-
-        /* RESPONSIVE */
-        .mapboxgl-ctrl-top-right { top: 90px; right: 10px; }
-        @media (max-width: 600px) {
-            .page-header { width: calc(100% - 70px); top: 15px; left: 15px; padding: 10px 15px; }
-            .header-logo { width: 35px; height: 35px; font-size: 16px; }
-            .header-text h1 { font-size: 15px; }
-            .controls-group { bottom: 30px; top: auto; width: 100%; justify-content: center; }
-            .sidebar { top: auto; bottom: 85px; left: 10px; width: calc(100% - 60px); max-height: 40vh; }
-            .mapboxgl-ctrl-top-right { display: none; }
-        }
+        .custom-marker { width: 18px; height: 18px; border-radius: 50%; border: 2px solid white; box-shadow: 0 0 10px rgba(0,0,0,0.3); cursor: pointer; }
     </style>
 </head>
 <body>
@@ -184,371 +66,236 @@
 <div id="map"></div>
 
 <div class="page-header">
-    <div class="header-logo"><i class="fas fa-map-marked-alt"></i></div>
-    <div class="header-text">
-        <h1>SIDOARJO MAPS</h1>
-        <p>Portal Wisata, Ekraf & Hotel</p>
-    </div>
-</div>
-
-<div class="controls-group">
-    <button class="control-btn active" id="btn-street" onclick="changeStyle('streets')"><i class="fas fa-city"></i> Peta Jalan</button>
-    <button class="control-btn" id="btn-sat" onclick="changeStyle('satellite')"><i class="fas fa-satellite"></i> Satelit 3D</button>
-</div>
-
-<div class="sidebar" id="sidebar">
-    <div class="stats-grid">
-        <div class="stat-box">
-            <div class="stat-val" style="color:var(--primary)" id="total-count">0</div>
-            <div class="stat-lbl">Total Lokasi</div>
-        </div>
-        <div class="stat-box">
-            <div class="stat-val" style="color:var(--danger)" id="risk-count">0</div>
-            <div class="stat-lbl">Risiko Tinggi</div>
-        </div>
-    </div>
-
+    <div class="header-logo"><i class="fas fa-database"></i></div>
     <div>
-        <div class="filter-title">FILTER KATEGORI</div>
-        <div class="chips-container" id="filters">
-            <div class="chip active" onclick="filterData('all', this)">Semua</div>
-            <div class="chip" onclick="filterData('Pariwisata', this)">Wisata</div>
-            <div class="chip" onclick="filterData('Hotel', this)">Hotel/Penginapan</div>
-            <div class="chip" onclick="filterData('Kuliner', this)">Kuliner</div>
-            <div class="chip" onclick="filterData('Kriya', this)">Kriya/Fashion</div>
-            <div class="chip" onclick="filterData('Pertanian', this)">Agrowisata</div>
-        </div>
+        <h1 style="margin:0; font-size:15px; font-weight:800; color:#1e293b;">Portal 44 Lokasi Sidoarjo</h1>
+        <p style="margin:0; font-size:10px; color:#64748b;">Statistik & Navigasi Terpadu</p>
+    </div>
+</div>
+
+<div class="map-controls">
+    <button id="btn-2d" class="ctrl-btn active" onclick="setMapMode('2d')"><i class="fas fa-map"></i> 2D VIEW</button>
+    <button id="btn-3d" class="ctrl-btn" onclick="setMapMode('3d')"><i class="fas fa-globe"></i> 3D GLOBE</button>
+</div>
+
+<div class="sidebar">
+    <div class="stats-grid">
+        <div class="stat-card stat-total">TOTAL DATABASE <strong id="total-count">0</strong></div>
+        <div class="stat-card stat-low">RISIKO RENDAH <strong id="low-count">0</strong></div>
+        <div class="stat-card stat-med">RISIKO SEDANG <strong id="med-count">0</strong></div>
+        <div class="stat-card stat-high">RISIKO TINGGI <strong id="high-count">0</strong></div>
+    </div>
+
+    <div class="category-box">
+        <div class="chip active" onclick="filterCategory('all', this)">Semua</div>
+        <div class="chip" onclick="filterCategory('Pariwisata', this)">Wisata</div>
+        <div class="chip" onclick="filterCategory('Hotel', this)">Hotel</div>
+        <div class="chip" onclick="filterCategory('Kuliner', this)">Kuliner</div>
+        <div class="chip" onclick="filterCategory('Fashion', this)">Fashion</div>
+        <div class="chip" onclick="filterCategory('Agrowisata', this)">Agrowisata</div>
     </div>
 
     <div class="loc-list" id="location-list"></div>
 </div>
 
+<div class="modal" id="modalAnalysis">
+    <div class="modal-content">
+        <button class="close-btn" onclick="closeModal('modalAnalysis')">X</button>
+        <div id="anaBody"></div>
+    </div>
+</div>
+
+<div class="modal" id="modalSV">
+    <div class="sv-container">
+        <button class="close-btn" onclick="closeModal('modalSV')">X</button>
+        <div id="pano"></div>
+    </div>
+</div>
+
 <script>
     mapboxgl.accessToken = 'pk.eyJ1IjoiYWRlbnNldHlvOTEiLCJhIjoiY21qcng1NGNkNGs3bzNpb3dwN2F4d21iMiJ9.HuxCF8jOGISuEBdyjOJznw';
 
-    // SETUP PETA
     const map = new mapboxgl.Map({
         container: 'map',
-        style: 'mapbox://styles/mapbox/streets-v12', 
+        style: 'mapbox://styles/mapbox/streets-v12',
         center: [112.7150, -7.4500],
         zoom: 11,
-        pitch: 50,
-        bearing: 0,
-        projection: 'globe',
-        antialias: true
+        projection: 'globe'
     });
 
-    // EFEK ATMOSFER
-    map.on('style.load', () => {
-        map.setFog({
-            'color': 'rgb(186, 210, 235)',
-            'high-color': 'rgb(36, 92, 223)',
-            'horizon-blend': 0.02,
-            'space-color': 'rgb(11, 11, 25)',
-            'star-intensity': 0.6
-        });
-    });
-
-    // NAVIGASI
     const directions = new MapboxDirections({
         accessToken: mapboxgl.accessToken,
-        unit: 'metric',
-        profile: 'mapbox/driving',
-        controls: { inputs: true, instructions: true, profileSwitcher: false },
-        language: 'id'
+        unit: 'metric', profile: 'mapbox/driving',
+        controls: { inputs: true, instructions: true }
     });
     map.addControl(directions, 'top-right');
 
-    // --- DATABASE LOKASI SIDOARJO (TERLENGKAP: 24 LOKASI) ---
+    // --- DATABASE 44 LOKASI ---
     const dataStore = [
-        // === 1. HOTEL & AKOMODASI (8 LOKASI BARU) ===
-        {
-            id:101, nama: "Aston Sidoarjo City Hotel", sektor: "Hotel", kec: "Buduran",
-            lat: -7.4349, lng: 112.6942, risk: "Rendah",
-            img: "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=600&q=80",
-            desc: "Hotel bintang 3 dengan fasilitas lengkap dan lokasi strategis dekat pintu tol."
-        },
-        {
-            id:102, nama: "Luminor Hotel Sidoarjo", sektor: "Hotel", kec: "Sidoarjo",
-            lat: -7.4488, lng: 112.7031, risk: "Rendah",
-            img: "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=600&q=80",
-            desc: "Hotel modern di pusat kota dengan akses mudah ke kawasan kuliner."
-        },
-        {
-            id:103, nama: "Premier Place Hotel", sektor: "Hotel", kec: "Gedangan",
-            lat: -7.3805, lng: 112.7458, risk: "Rendah",
-            img: "https://images.unsplash.com/photo-1571003123894-1f0594d2b5d9?auto=format&fit=crop&w=600&q=80",
-            desc: "Hotel berkonsep resort di dekat Bandara Juanda."
-        },
-        {
-            id:104, nama: "Swiss-Belinn Airport", sektor: "Hotel", kec: "Gedangan",
-            lat: -7.3800, lng: 112.7424, risk: "Rendah",
-            img: "https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?auto=format&fit=crop&w=600&q=80",
-            desc: "Pilihan utama transit wisatawan dengan akses cepat ke Bandara."
-        },
-        {
-            id:105, nama: "Hotel Neo+ Waru", sektor: "Hotel", kec: "Waru",
-            lat: -7.3575, lng: 112.7286, risk: "Sedang",
-            img: "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?auto=format&fit=crop&w=600&q=80",
-            desc: "Hotel budget modern yang cocok untuk pebisnis di area Waru."
-        },
-        {
-            id:106, nama: "Favehotel Sidoarjo", sektor: "Hotel", kec: "Sidoarjo",
-            lat: -7.4395, lng: 112.7209, risk: "Rendah",
-            img: "https://images.unsplash.com/photo-1596436889106-be35e843f974?auto=format&fit=crop&w=600&q=80",
-            desc: "Hotel ikonik di jantung kota Sidoarjo dengan nuansa pink."
-        },
-        {
-            id:107, nama: "The Sun Hotel", sektor: "Hotel", kec: "Sidoarjo",
-            lat: -7.4495, lng: 112.7101, risk: "Rendah",
-            img: "https://images.unsplash.com/photo-1611892440504-42a792e24d32?auto=format&fit=crop&w=600&q=80",
-            desc: "Terintegrasi langsung dengan Suncity Mall dan Waterpark."
-        },
-        {
-            id:108, nama: "Cordela Inn Sidoarjo", sektor: "Hotel", kec: "Sidoarjo",
-            lat: -7.4367, lng: 112.7148, risk: "Sedang",
-            img: "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=600&q=80",
-            desc: "Penginapan nyaman di kawasan Pagerwojo."
-        },
+        // HOTEL (9)
+        { id:1, nama: "Aston Sidoarjo Hotel", sektor: "Hotel", lat: -7.4349, lng: 112.6942, risk: "Rendah", score: 95, main: "Kamar & Ballroom", circ: "Water Recycling", img: "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=400" },
+        { id:2, nama: "Luminor Hotel Sidoarjo", sektor: "Hotel", lat: -7.4488, lng: 112.7031, risk: "Rendah", score: 87, main: "Akomodasi", circ: "Green Energy", img: "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=400" },
+        { id:3, nama: "Premier Place Hotel", sektor: "Hotel", lat: -7.3805, lng: 112.7458, risk: "Rendah", score: 89, main: "Transit Hotel", circ: "Solar Power", img: "https://images.unsplash.com/photo-1571003123894-1f0594d2b5d9?w=400" },
+        { id:4, nama: "Swiss-Belinn Airport", sektor: "Hotel", lat: -7.3800, lng: 112.7424, risk: "Rendah", score: 85, main: "Airport Stay", circ: "Waste Management", img: "https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?w=400" },
+        { id:5, nama: "Suncity Hotel", sektor: "Hotel", lat: -7.4495, lng: 112.7101, risk: "Rendah", score: 94, main: "Hotel & Mall", circ: "Cooling System", img: "https://images.unsplash.com/photo-1611892440504-42a792e24d32?w=400" },
+        { id:6, nama: "Hotel Neo+ Waru", sektor: "Hotel", lat: -7.3575, lng: 112.7286, risk: "Sedang", score: 72, main: "Business Stay", circ: "Eco-Linen", img: "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=400" },
+        { id:7, nama: "Delta Sinar Mayang", sektor: "Hotel", lat: -7.4520, lng: 112.7150, risk: "Sedang", score: 74, main: "Budget Stay", circ: "Energy Saving", img: "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=400" },
+        { id:8, nama: "The Sun Hotel", sektor: "Hotel", lat: -7.4480, lng: 112.7120, risk: "Rendah", score: 90, main: "Hospitality", circ: "Eco-Friendly", img: "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=400" },
+        { id:9, nama: "Favehotel Sidoarjo", sektor: "Hotel", lat: -7.4450, lng: 112.7130, risk: "Rendah", score: 88, main: "Modern Stay", circ: "Digital Paperless", img: "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=400" },
 
-        // === 2. PARIWISATA & HERITAGE ===
-        { 
-            id:1, nama: "Pabrik Gula Candi Baru", sektor: "Pariwisata", kec: "Candi", 
-            lat: -7.4754, lng: 112.7138, risk: "Rendah", 
-            img: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/75/Pabrik_Gula_Candi_Baru_Sidoarjo.jpg/640px-Pabrik_Gula_Candi_Baru_Sidoarjo.jpg", 
-            desc: "Bangunan bersejarah peninggalan kolonial."
-        },
-        { 
-            id:2, nama: "Candi Pari", sektor: "Pariwisata", kec: "Porong", 
-            lat: -7.5453, lng: 112.7126, risk: "Rendah", 
-            img: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Candi_Pari.jpg/640px-Candi_Pari.jpg", 
-            desc: "Candi peninggalan Majapahit di Porong."
-        },
-        { 
-            id:3, nama: "Museum Mpu Tantular", sektor: "Pariwisata", kec: "Buduran", 
-            lat: -7.4300, lng: 112.7214, risk: "Sedang", 
-            img: "https://assets-a1.kompasiana.com/items/album/2019/07/22/img-20190721-125011-5d35ad360d8230214c776fb2.jpg", 
-            desc: "Museum Negeri Jatim dengan koleksi geologi dan sejarah."
-        },
+        // WISATA (12)
+        { id:10, nama: "Pabrik Gula Candi Baru", sektor: "Pariwisata", lat: -7.4754, lng: 112.7138, risk: "Rendah", score: 82, main: "Heritage Tour", circ: "Molase Daur Ulang", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/75/Pabrik_Gula_Candi_Baru_Sidoarjo.jpg/640px-Pabrik_Gula_Candi_Baru_Sidoarjo.jpg" },
+        { id:11, nama: "Museum Mpu Tantular", sektor: "Pariwisata", lat: -7.4300, lng: 112.7214, risk: "Sedang", score: 68, main: "Edukasi Sejarah", circ: "Digital Heritage", img: "https://assets-a1.kompasiana.com/items/album/2019/07/22/img-20190721-125011-5d35ad360d8230214c776fb2.jpg" },
+        { id:12, nama: "Candi Pari", sektor: "Pariwisata", lat: -7.5453, lng: 112.7126, risk: "Rendah", score: 75, main: "Situs Budaya", circ: "Local Tour", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Candi_Pari.jpg/640px-Candi_Pari.jpg" },
+        { id:13, nama: "Alun-Alun Sidoarjo", sektor: "Pariwisata", lat: -7.4468, lng: 112.7179, risk: "Rendah", score: 85, main: "Public Space", circ: "Waste Sorting", img: "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=400" },
+        { id:14, nama: "Wisata Lumpur Lapindo", sektor: "Pariwisata", lat: -7.5250, lng: 112.7100, risk: "Tinggi", score: 40, main: "Geo-Wisata", circ: "Mud Utilization", img: "https://upload.wikimedia.org/wikipedia/commons/a/af/Sidoarjo_Mud_Flow_2008.jpg" },
+        { id:15, nama: "Wisata Bahari Tlocor", sektor: "Pariwisata", lat: -7.5850, lng: 112.8350, risk: "Sedang", score: 62, main: "Wisata Air", circ: "Mangrove Conservation", img: "https://images.unsplash.com/photo-1544551763-47a0159c9636?w=400" },
+        { id:16, nama: "Pulau Lusi", sektor: "Pariwisata", lat: -7.5950, lng: 112.8450, risk: "Rendah", score: 78, main: "Eko-Wisata", circ: "Sedimentation Land", img: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=400" },
+        { id:17, nama: "Monumen Jayandaru", sektor: "Pariwisata", lat: -7.4460, lng: 112.7185, risk: "Rendah", score: 80, main: "Landmark City", circ: "Photo Spot", img: "https://images.unsplash.com/photo-1564507592333-c60657eea523?w=400" },
+        { id:18, nama: "Candi Sumur", sektor: "Pariwisata", lat: -7.5460, lng: 112.7135, risk: "Rendah", score: 70, main: "History Site", circ: "Cultural Asset", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/Candi_Sumur.jpg/640px-Candi_Sumur.jpg" },
+        { id:19, nama: "Taman Pinang Indah", sektor: "Pariwisata", lat: -7.4580, lng: 112.7050, risk: "Rendah", score: 82, main: "Taman Kota", circ: "Urban Green", img: "https://images.unsplash.com/photo-1585938389612-a552a28d6914?w=400" },
+        { id:20, nama: "Candi Tawangalun", sektor: "Pariwisata", lat: -7.3850, lng: 112.7550, risk: "Sedang", score: 58, main: "Situs Kuno", circ: "Preservation", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/Candi_Tawangalun.jpg/640px-Candi_Tawangalun.jpg" },
+        { id:21, nama: "Puspa Agro", sektor: "Pariwisata", lat: -7.3650, lng: 112.6850, risk: "Rendah", score: 88, main: "Pasar Induk", circ: "Agri-Supply", img: "https://images.unsplash.com/photo-1488459716781-31db52582fe9?w=400" },
 
-        // === 3. AGROWISATA & PERTANIAN ===
-        {
-            id:4, nama: "Agrowisata Puspa Lebo", sektor: "Pertanian", kec: "Sukodono",
-            lat: -7.412, lng: 112.680, risk: "Rendah",
-            img: "https://diskominfo.jatimprov.go.id/uploads/2019/08/Agro-Puspa-Lebo-Sidoarjo.jpg",
-            desc: "Pusat pengembangan pertanian modern."
-        },
-        {
-            id:5, nama: "Wisata Petik Jambu Kebaron", sektor: "Pertanian", kec: "Tulangan",
-            lat: -7.485, lng: 112.645, risk: "Sedang",
-            img: "https://i.ytimg.com/vi/a_64L3dO_f8/maxresdefault.jpg",
-            desc: "Kebun jambu kristal milik warga desa."
-        },
-        {
-            id:6, nama: "Kampung Bebek Candi", sektor: "Pertanian", kec: "Candi",
-            lat: -7.488, lng: 112.730, risk: "Sedang",
-            img: "https://cdn.timesmedia.co.id/images/2021/03/13/Kampung-Bebek-Sidoarjo.jpg",
-            desc: "Sentra peternakan bebek dan telur asin."
-        },
-        {
-            id:7, nama: "Agrowisata Sambibulu", sektor: "Pertanian", kec: "Taman",
-            lat: -7.362, lng: 112.678, risk: "Tinggi",
-            img: "https://i.ytimg.com/vi/pn78wAdsISI/maxresdefault.jpg",
-            desc: "Wisata edukasi pertanian mini."
-        },
+        // KULINER (10)
+        { id:22, nama: "Lontong Kupang Misari", sektor: "Kuliner", lat: -7.435, lng: 112.722, risk: "Rendah", score: 92, main: "Khas Sidoarjo", circ: "Pakan Cangkang", img: "https://img.okezone.com/content/2022/10/01/298/2678601/lontong-kupang-pak-misari-kuliner-legendaris-sidoarjo-langganan-artis-ibu-kota-9Q8ZgZgZgZ.jpg" },
+        { id:23, nama: "Rawon Gajah Mada", sektor: "Kuliner", lat: -7.456, lng: 112.716, risk: "Rendah", score: 88, main: "Rawon Daging", circ: "Waste-to-Bio", img: "https://assets-pergikuliner.com/uploads/image/picture/1782631/picture-1579243765.jpg" },
+        { id:24, nama: "Ote-Ote Porong", sektor: "Kuliner", lat: -7.534, lng: 112.796, risk: "Sedang", score: 65, main: "Snack Legend", circ: "Used Oil Recycle", img: "https://asset.kompas.com/crops/Ote-Ote-Porong.jpg" },
+        { id:25, nama: "Kupang Jabon", sektor: "Kuliner", lat: -7.5880, lng: 112.8250, risk: "Sedang", score: 60, main: "Kupang Segar", circ: "Local Catch", img: "https://cdn.timesmedia.co.id/images/2021/03/13/Kampung-Bebek-Sidoarjo.jpg" },
+        { id:26, nama: "Bandeng Asap", sektor: "Kuliner", lat: -7.4420, lng: 112.7180, risk: "Rendah", score: 95, main: "Oleh-oleh", circ: "Bone Fertilizer", img: "https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?w=400" },
+        { id:27, nama: "Resto Handayani", sektor: "Kuliner", lat: -7.3680, lng: 112.6950, risk: "Rendah", score: 86, main: "Masakan Indo", circ: "Green Resto", img: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=400" },
+        { id:28, nama: "Sate Kerang", sektor: "Kuliner", lat: -7.4450, lng: 112.7190, risk: "Rendah", score: 84, main: "Sate Seafood", circ: "Local Resource", img: "https://images.unsplash.com/photo-1603360946369-dc9bb6258143?w=400" },
+        { id:29, nama: "Sentra Kerupuk", sektor: "Kuliner", lat: -7.4720, lng: 112.7250, risk: "Sedang", score: 70, main: "Kerupuk Ikan", circ: "Production Waste", img: "https://images.unsplash.com/photo-1610450949065-1f284240689b?w=400" },
+        { id:30, nama: "Bebek Jayakarta", sektor: "Kuliner", lat: -7.4520, lng: 112.7110, risk: "Rendah", score: 82, main: "Bebek Goreng", circ: "Bio-Fertilizer", img: "https://images.unsplash.com/photo-1516684669134-de6f7c473a2a?w=400" },
+        { id:31, nama: "Bakso Solo Sidoarjo", sektor: "Kuliner", lat: -7.4490, lng: 112.7140, risk: "Rendah", score: 80, main: "Bakso & Mie", circ: "Eco-Serving", img: "https://images.unsplash.com/photo-1593001874117-c99c44240393?w=400" },
 
-        // === 4. KULINER LEGENDARIS ===
-        { 
-            id:8, nama: "Rawon Gajah Mada", sektor: "Kuliner", kec: "Sidoarjo", 
-            lat: -7.456, lng: 112.716, risk: "Rendah", 
-            img: "https://assets-pergikuliner.com/uploads/image/picture/1782631/picture-1579243765.jpg", 
-            desc: "Kuliner rawon paling ikonik di Sidoarjo."
-        },
-        { 
-            id:9, nama: "Lontong Kupang Pak Misari", sektor: "Kuliner", kec: "Buduran", 
-            lat: -7.435, lng: 112.722, risk: "Rendah", 
-            img: "https://img.okezone.com/content/2022/10/01/298/2678601/lontong-kupang-pak-misari-kuliner-legendaris-sidoarjo-langganan-artis-ibu-kota-9Q8ZgZgZgZ.jpg", 
-            desc: "Sajian khas Sidoarjo berbahan kerang kecil."
-        },
-        { 
-            id:10, nama: "Pazkul Kahuripan Nirwana", sektor: "Kuliner", kec: "Sidoarjo", 
-            lat: -7.445, lng: 112.705, risk: "Rendah", 
-            img: "https://i.ytimg.com/vi/8s6lB5V5_5E/maxresdefault.jpg", 
-            desc: "Pusat kuliner modern konsep outdoor."
-        },
-        { 
-            id:11, nama: "Ote-Ote Porong", sektor: "Kuliner", kec: "Porong", 
-            lat: -7.534, lng: 112.796, risk: "Sedang", 
-            img: "https://asset.kompas.com/crops/Ote-Ote-Porong.jpg", 
-            desc: "Jajanan legendaris khas Porong."
-        },
+        // FASHION / EKRAF (8)
+        { id:32, nama: "Kampung Batik Jetis", sektor: "Fashion", lat: -7.4389, lng: 112.7150, risk: "Rendah", score: 88, main: "Batik Tulis", circ: "Waste Water Filter", img: "https://asset.kompas.com/crops/O3vB1k5qQv6KqJ6yQv6KqJ6yQv6=/0x0:1000x667/750x500/data/photo/2020/10/02/5f76a5b6a5b6a.jpg" },
+        { id:33, nama: "Industri Tas Tanggulangin", sektor: "Fashion", lat: -7.5056, lng: 112.6980, risk: "Tinggi", score: 45, main: "Leather Craft", circ: "Sisa Kulit", img: "https://images.unsplash.com/photo-1549448830-4e50889218d6?w=400" },
+        { id:34, nama: "Indah Bordir", sektor: "Fashion", lat: -7.442, lng: 112.721, risk: "Rendah", score: 91, main: "Muslim Fashion", circ: "Waste Fabric", img: "https://images.unsplash.com/photo-1558769132-cb1aea458c5e?w=400" },
+        { id:35, nama: "Batik Sari Kenongo", sektor: "Fashion", lat: -7.492, lng: 112.651, risk: "Sedang", score: 62, main: "Batik Tulangan", circ: "Wax Recycling", img: "https://batiksarikenongo.com/wp-content/uploads/2021/06/galeri-batik-sari-kenongo.jpg" },
+        { id:36, nama: "Kampung Logam Ngingas", sektor: "Fashion", lat: -7.3620, lng: 112.7150, risk: "Tinggi", score: 42, main: "Logam & Sparepart", circ: "Scrap Recycle", img: "https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?w=400" },
+        { id:37, nama: "Sentra UKM Candi", sektor: "Fashion", lat: -7.4764, lng: 112.6450, risk: "Tinggi", score: 40, main: "Handicraft", circ: "Natural Dye", img: "https://images.unsplash.com/photo-1598522675667-e96726c59b2d?w=400" },
+        { id:38, nama: "Sentra Sepatu Krian", sektor: "Fashion", lat: -7.4120, lng: 112.5850, risk: "Sedang", score: 68, main: "Alas Kaki", circ: "Rubber Recycling", img: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400" },
+        { id:39, nama: "Batik Sidoarjo Cantik", sektor: "Fashion", lat: -7.4430, lng: 112.7200, risk: "Rendah", score: 84, main: "Batik Cap", circ: "Water Reuse", img: "https://images.unsplash.com/photo-1544441893-675973e31985?w=400" },
 
-        // === 5. FASHION & EKRAF ===
-        { 
-            id:12, nama: "Indah Bordir", sektor: "Kriya", kec: "Sidoarjo", 
-            lat: -7.442, lng: 112.721, risk: "Rendah", 
-            img: "https://lh5.googleusercontent.com/p/AF1QipN-0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0/w408-h306-k-no", 
-            desc: "Pusat busana muslim dan bordir terbesar."
-        },
-        { 
-            id:13, nama: "Batik Sari Kenongo", sektor: "Kriya", kec: "Tulangan", 
-            lat: -7.492, lng: 112.651, risk: "Sedang", 
-            img: "https://batiksarikenongo.com/wp-content/uploads/2021/06/galeri-batik-sari-kenongo.jpg", 
-            desc: "Sentra batik tulis khas Sidoarjo."
-        },
-        { 
-            id:14, nama: "Suncity Mall Sidoarjo", sektor: "Fesyen", kec: "Sidoarjo", 
-            lat: -7.449, lng: 112.711, risk: "Rendah", 
-            img: "https://lh5.googleusercontent.com/p/AF1QipP_P_P_P_P_P_P_P_P_P_P_P_P_P_P_P_P/w408-h306-k-no", 
-            desc: "Pusat perbelanjaan modern."
-        },
-        { 
-            id:15, nama: "Kampung Batik Jetis", sektor: "Kriya", kec: "Sidoarjo", 
-            lat: -7.4389, lng: 112.7150, risk: "Rendah", 
-            img: "https://asset.kompas.com/crops/O3vB1k5qQv6KqJ6yQv6KqJ6yQv6=/0x0:1000x667/750x500/data/photo/2020/10/02/5f76a5b6a5b6a.jpg", 
-            desc: "Sentra batik tulis legendaris di tengah kota."
-        },
-        { 
-            id:16, nama: "Industri Tas Tanggulangin", sektor: "Fesyen", kec: "Tanggulangin", 
-            lat: -7.5056, lng: 112.6980, risk: "Tinggi", 
-            img: "https://images.unsplash.com/photo-1549448830-4e50889218d6?auto=format&fit=crop&w=600&q=80", 
-            desc: "Sentra kerajinan kulit dan tas."
-        }
+        // AGROWISATA (5)
+        { id:40, nama: "Agrowisata Puspa Lebo", sektor: "Agrowisata", lat: -7.412, lng: 112.680, risk: "Rendah", score: 84, main: "Edu-Tani", circ: "Organic Composting", img: "https://diskominfo.jatimprov.go.id/uploads/2019/08/Agro-Puspa-Lebo-Sidoarjo.jpg" },
+        { id:41, nama: "Kebun Jambu Kebaron", sektor: "Agrowisata", lat: -7.485, lng: 112.645, risk: "Sedang", score: 58, main: "Jambu Kristal", circ: "Natural Pest Control", img: "https://i.ytimg.com/vi/a_64L3dO_f8/maxresdefault.jpg" },
+        { id:42, nama: "Agro Sambibulu", sektor: "Agrowisata", lat: -7.362, lng: 112.678, risk: "Tinggi", score: 38, main: "Hidroponik", circ: "Bio-Nutrient", img: "https://i.ytimg.com/vi/pn78wAdsISI/maxresdefault.jpg" },
+        { id:43, nama: "Kampung Bebek", sektor: "Agrowisata", lat: -7.488, lng: 112.730, risk: "Sedang", score: 66, main: "Telur Asin", circ: "Duck Waste", img: "https://cdn.timesmedia.co.id/images/2021/03/13/Kampung-Bebek-Sidoarjo.jpg" },
+        { id:44, nama: "Sentra Jamur", sektor: "Agrowisata", lat: -7.425, lng: 112.615, risk: "Rendah", score: 75, main: "Jamur Tiram", circ: "Baglog Composting", img: "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=400" }
     ];
-
-    map.on('load', () => {
-        add3DBuildings();
-        renderPoints(dataStore);
-        updateStats(dataStore);
-    });
-
-    // FUNGSI GANTI STYLE
-    window.changeStyle = function(style) {
-        document.getElementById('btn-street').classList.remove('active');
-        document.getElementById('btn-sat').classList.remove('active');
-
-        if (style === 'streets') {
-            document.getElementById('btn-street').classList.add('active');
-            map.setStyle('mapbox://styles/mapbox/streets-v12');
-        } else {
-            document.getElementById('btn-sat').classList.add('active');
-            map.setStyle('mapbox://styles/mapbox/satellite-streets-v12');
-        }
-
-        map.once('style.load', () => {
-            add3DBuildings();
-            map.setFog({});
-            renderPoints(dataStore);
-        });
-    }
-
-    // LAYER GEDUNG 3D
-    function add3DBuildings() {
-        if(map.getLayer('3d-buildings')) return;
-        const layers = map.getStyle().layers;
-        const labelLayerId = layers.find(l => l.type === 'symbol' && l.layout['text-field']).id;
-        map.addLayer({
-            'id': '3d-buildings',
-            'source': 'composite',
-            'source-layer': 'building',
-            'filter': ['==', 'extrude', 'true'],
-            'type': 'fill-extrusion',
-            'minzoom': 13,
-            'paint': {
-                'fill-extrusion-color': '#aaa',
-                'fill-extrusion-height': ['get', 'height'],
-                'fill-extrusion-base': ['get', 'min_height'],
-                'fill-extrusion-opacity': 0.6
-            }
-        }, labelLayerId);
-    }
 
     let currentMarkers = [];
 
-    function renderPoints(data) {
+    map.on('load', () => {
+        map.setFog({ 'color': 'rgb(186, 210, 235)', 'high-color': 'rgb(36, 92, 223)', 'star-intensity': 0.6 });
+        renderData(dataStore);
+    });
+
+    function renderData(data) {
         currentMarkers.forEach(m => m.remove());
         currentMarkers = [];
-        const listEl = document.getElementById('location-list');
-        listEl.innerHTML = '';
+        const list = document.getElementById("location-list");
+        list.innerHTML = "";
 
         data.forEach(item => {
             const el = document.createElement('div');
-            // Cek apakah ini Hotel untuk warna ungu, jika tidak cek risiko
-            let markerClass = `marker-dot risk-${item.risk}`;
-            if(item.sektor === 'Hotel') markerClass += ' sector-Hotel';
-            
-            el.className = markerClass;
-            
+            el.className = 'custom-marker';
+            let color = item.risk === "Tinggi" ? "var(--danger)" : (item.risk === "Sedang" ? "var(--accent)" : "var(--success)");
+            if(item.sektor === "Hotel") color = "var(--purple)";
+            el.style.backgroundColor = color;
+
             const marker = new mapboxgl.Marker(el)
                 .setLngLat([item.lng, item.lat])
-                .setPopup(createPopup(item))
+                .setPopup(new mapboxgl.Popup({ offset: 25 }).setHTML(`
+                    <div class="popup-wrap">
+                        <img src="${item.img}" class="pop-img">
+                        <div class="pop-body">
+                            <strong style="font-size:11px;">${item.nama}</strong><br>
+                            <button class="pop-btn" style="background:var(--success); color:white;" onclick="getNav(${item.lat}, ${item.lng})"><i class="fas fa-route"></i> NAVIGASI</button>
+                            <button class="pop-btn" style="background:var(--purple); color:white;" onclick="openSV(${item.lat}, ${item.lng})"><i class="fas fa-street-view"></i> 360° VIEW</button>
+                            <button class="pop-btn" style="background:#f1f5f9; color:#475569;" onclick="openAna(${item.id})"><i class="fas fa-chart-bar"></i> ANALISIS</button>
+                        </div>
+                    </div>
+                `))
                 .addTo(map);
             currentMarkers.push(marker);
 
-            const card = document.createElement('div');
+            const card = document.createElement("div");
             card.className = `loc-card risk-${item.risk}`;
-            // Tambahkan atribut data-sector
-            card.setAttribute('data-sector', item.sektor);
-            
-            card.innerHTML = `
-                <div class="loc-info">
-                    <h4>${item.nama}</h4>
-                    <span>${item.sektor} • ${item.kec}</span>
-                </div>
-                <div style="font-size:16px; color:#cbd5e1;"><i class="fas fa-chevron-right"></i></div>
-            `;
-            card.addEventListener('click', () => {
-                map.flyTo({ center: [item.lng, item.lat], zoom: 16, pitch: 60, bearing: 20 });
-                marker.togglePopup();
-            });
-            listEl.appendChild(card);
+            card.innerHTML = `<strong>${item.nama}</strong><br><small>${item.sektor} • ${item.risk}</small>`;
+            card.onclick = () => { map.flyTo({ center: [item.lng, item.lat], zoom: 16 }); marker.togglePopup(); };
+            list.appendChild(card);
         });
+        updateDashboard(data);
     }
 
-    function createPopup(item) {
-        return new mapboxgl.Popup({ offset: 25, closeButton: false }).setHTML(`
-            <div class="popup-header" style="background-image: url('${item.img}');">
-                <div class="popup-gradient"></div>
-                <div class="popup-title">${item.nama}</div>
-            </div>
-            <div class="popup-body">
-                <div class="tag-row">
-                    <span class="tag">${item.sektor}</span>
-                    <span class="tag risk-${item.risk}">${item.risk} Risk</span>
-                </div>
-                <p style="margin:0; font-size:12px; line-height:1.5; color:#475569;">${item.desc}</p>
-                <button class="btn-nav" onclick="startNavigation(${item.lng}, ${item.lat})">
-                    <i class="fas fa-location-arrow"></i> Rute Navigasi
-                </button>
-            </div>
-        `);
+    window.filterCategory = (cat, el) => {
+        document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+        el.classList.add('active');
+        const filtered = (cat === 'all') ? dataStore : dataStore.filter(d => d.sektor === cat);
+        renderData(filtered);
+    };
+
+    function updateDashboard(data) {
+        document.getElementById("total-count").innerText = data.length;
+        document.getElementById("low-count").innerText = data.filter(d => d.risk === "Rendah").length;
+        document.getElementById("med-count").innerText = data.filter(d => d.risk === "Sedang").length;
+        document.getElementById("high-count").innerText = data.filter(d => d.risk === "Tinggi").length;
     }
 
-    window.startNavigation = function(destLng, destLat) {
-        directions.setDestination([destLng, destLat]);
+    window.getNav = (lat, lng) => {
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(pos => {
                 directions.setOrigin([pos.coords.longitude, pos.coords.latitude]);
-                map.flyTo({ center: [pos.coords.longitude, pos.coords.latitude], zoom: 14 });
-            }, () => alert("Aktifkan GPS Browser!"));
-        } else { alert("GPS tidak didukung"); }
-    }
+                directions.setDestination([lng, lat]);
+            });
+        }
+    };
 
-    window.filterData = function(cat, el) {
-        document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
-        el.classList.add('active');
-        const filtered = (cat === 'all') ? dataStore : dataStore.filter(d => {
-            if (cat === 'Kriya') return d.sektor === 'Kriya' || d.sektor === 'Fesyen';
-            return d.sektor === cat;
+    window.openSV = (lat, lng) => {
+        const svService = new google.maps.StreetViewService();
+        svService.getPanorama({ location: {lat, lng}, radius: 100 }, (data, status) => {
+            if (status === "OK") {
+                document.getElementById("modalSV").style.display = "flex";
+                const pano = new google.maps.StreetViewPanorama(document.getElementById("pano"));
+                pano.setPano(data.location.pano); pano.setVisible(true);
+            } else { alert("Street View tidak tersedia di lokasi ini."); }
         });
-        renderPoints(filtered);
-    }
+    };
 
-    function updateStats(data) {
-        document.getElementById('total-count').innerText = data.length;
-        document.getElementById('risk-count').innerText = data.filter(d => d.risk === 'Tinggi').length;
-    }
+    window.openAna = (id) => {
+        const itm = dataStore.find(d => d.id === id);
+        document.getElementById("anaBody").innerHTML = `
+            <h3 style="margin:0 0 10px 0;">${itm.nama}</h3>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:15px;">
+                <div style="text-align:center; background:#f8fafc; padding:15px; border-radius:15px; border:1px solid #ddd;">
+                    <div style="font-size:32px; font-weight:800; color:${itm.risk === 'Tinggi' ? 'var(--danger)' : 'var(--success)'}">${itm.score}</div>
+                    <div style="font-size:10px; font-weight:bold;">RISIKO ${itm.risk.toUpperCase()}</div>
+                </div>
+                <div style="font-size:11px;">
+                    <strong>Produk:</strong><br>${itm.main}<br><br>
+                    <strong>Sirkular:</strong><br>${itm.circ}
+                </div>
+            </div>`;
+        document.getElementById("modalAnalysis").style.display = "flex";
+    };
+
+    window.setMapMode = (mode) => {
+        document.getElementById('btn-2d').classList.toggle('active', mode === '2d');
+        document.getElementById('btn-3d').classList.toggle('active', mode === '3d');
+        if(mode === '3d') {
+            map.setStyle('mapbox://styles/mapbox/satellite-streets-v12');
+            map.easeTo({ pitch: 60, bearing: -20 });
+        } else {
+            map.setStyle('mapbox://styles/mapbox/streets-v12');
+            map.easeTo({ pitch: 0, bearing: 0 });
+        }
+    };
+
+    window.closeModal = (id) => document.getElementById(id).style.display = "none";
 </script>
-
 </body>
 </html>
